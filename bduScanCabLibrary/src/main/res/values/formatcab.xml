@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources>
+    <integer name="FORMAT_QR_CODE">256</integer>
+    <integer name="FORMAT_UPC_A">512</integer>
+    <integer name="FORMAT_UPC_E">1024</integer>
+    <integer name="FORMAT_AZTEC">4096</integer>
+    <integer name="FORMAT_CODABAR">8</integer>
+    <integer name="FORMAT_CODE_128">1</integer>
+    <integer name="FORMAT_CODE_39">2</integer>
+    <integer name="FORMAT_CODE_93">4</integer>
+    <integer name="FORMAT_DATA_MATRIX">16</integer>
+    <integer name="FORMAT_EAN_13">32</integer>
+    <integer name="FORMAT_EAN_8">64</integer>
+    <integer name="FORMAT_ITF">128</integer>
+    <integer name="FORMAT_PDF417">2048</integer>
+
+
+
+
+</resources>
