@@ -33,6 +33,7 @@ class scanQR : AppCompatActivity() {
 
         val intent = this.intent
         val formatCab = intent.getIntExtra(FORMAT_CAB,getResources().getInteger(R.integer.FORMAT_QR_CODE))
+        StoreData.setContext(this);
         val vibrate = intent.getIntExtra(VIBRATE,0)
         setFormatCab(formatCab)
         setVibrate(vibrate)
@@ -137,10 +138,6 @@ class scanQR : AppCompatActivity() {
         editor.putInt(FORMAT_DATA, value)
         editor.commit()
     }
-
-
-
-
 
     fun setVibrate(value: Int) {
         val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)

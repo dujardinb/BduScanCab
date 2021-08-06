@@ -11,8 +11,6 @@ import com.google.mlkit.vision.common.InputImage
 
 class BarcodeAnalyzer(private val barcodeListener: BarcodeListener) : ImageAnalysis.Analyzer {
 
-
-
     val options = BarcodeScannerOptions.Builder()
         .setBarcodeFormats(getFormatCab())
         .build()
@@ -44,7 +42,7 @@ class BarcodeAnalyzer(private val barcodeListener: BarcodeListener) : ImageAnaly
     }
 
     fun getFormatCab(): Int {
-        val pref = MyApplication.appContext.getSharedPreferences(scanQR.PARAM_PREF, AppCompatActivity.MODE_PRIVATE)
+        val pref = StoreData.getContext().getSharedPreferences(scanQR.PARAM_PREF, AppCompatActivity.MODE_PRIVATE)
         return pref.getInt(scanQR.FORMAT_DATA, 256)
     }
 
