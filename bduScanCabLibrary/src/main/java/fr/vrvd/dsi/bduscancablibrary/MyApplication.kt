@@ -6,14 +6,14 @@ import android.content.Context
 class MyApplication : Application() {
 
 
-        override fun onCreate() {
-            super.onCreate()
-            MyApplication.appContext = applicationContext
-        }
+    override fun onCreate() {
+        super.onCreate()
+        MyApplication.appContext = applicationContext
+    }
 
-        companion object {
+    companion object {
 
-            lateinit  var appContext: Context
+        lateinit var appContext: Context
 
-        }
+    }
 }
