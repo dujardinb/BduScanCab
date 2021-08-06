@@ -1,6 +1,8 @@
 package fr.vrvd.dsi.bduscancablibrary
 
 import android.annotation.SuppressLint
+import androidx.appcompat.app.AppCompatActivity
+
 import androidx.camera.core.ImageAnalysis
 import androidx.camera.core.ImageProxy
 import com.google.mlkit.vision.barcode.BarcodeScannerOptions
@@ -12,8 +14,7 @@ class BarcodeAnalyzer(private val barcodeListener: BarcodeListener) : ImageAnaly
 
 
     val options = BarcodeScannerOptions.Builder()
-        .setBarcodeFormats(
-            Prefs.getFormatCab())
+        .setBarcodeFormats(getFormatCab())
         .build()
 
     private val scanner = BarcodeScanning.getClient(options)
@@ -41,7 +42,16 @@ class BarcodeAnalyzer(private val barcodeListener: BarcodeListener) : ImageAnaly
                 }
         }
     }
+
+    fun getFormatCab(): Int {
+        val pref = MyApplication.appContext.getSharedPreferences(scanQR.PARAM_PREF, AppCompatActivity.MODE_PRIVATE)
+        return pref.getInt(scanQR.FORMAT_DATA, 256)
+    }
+
+
     companion object {
         const val TAG = "MYTEST"
+        const val PARAM_PREF = "PARAM_PREF"
+        const val FORMAT_DATA = "FORMAT_DATA"
     }
 }

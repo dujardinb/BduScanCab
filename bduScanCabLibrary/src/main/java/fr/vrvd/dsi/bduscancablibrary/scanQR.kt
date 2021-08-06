@@ -1,5 +1,6 @@
 package fr.vrvd.dsi.bduscancablibrary
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -14,26 +15,27 @@ import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
 
-typealias BarcodeListener = (barcode: String) -> Unit
+typealias BarcodeListener = ( barcode: String) -> Unit
+
 
 class scanQR : AppCompatActivity() {
     private var processingBarcode = AtomicBoolean(false)
     private lateinit var cameraExecutor: ExecutorService
-
+    private lateinit var scanQRContext: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Log.d(Companion.TAG, "onCreate")
         setContentView(R.layout.activity_scan_qr)
         cameraExecutor = Executors.newSingleThreadExecutor()
-
+        scanQRContext = this
         PermUtility.permissionCheck(this)
 
         val intent = this.intent
         val formatCab = intent.getIntExtra(FORMAT_CAB,getResources().getInteger(R.integer.FORMAT_QR_CODE))
         val vibrate = intent.getIntExtra(VIBRATE,0)
-        Prefs.setFormatCab(formatCab)
-        Prefs.setVibrate(vibrate)
+        setFormatCab(formatCab)
+        setVibrate(vibrate)
         startCamera()
     }
 
@@ -109,7 +111,7 @@ class scanQR : AppCompatActivity() {
     private fun searchBarcode(barcode: String) {
         Log.d(Companion.TAG, "searchBarcode:$barcode ")
 
-        if(Prefs.getVibrate() > 0) LibApp.vibrate(this)
+        if(getVibrate() > 0) LibApp.vibrate(this)
         val returnIntent = Intent()
         returnIntent.putExtra("result", barcode)
         setResult(RESULT_OK, returnIntent)
@@ -122,6 +124,35 @@ class scanQR : AppCompatActivity() {
         const val FORMAT_CAB =  "FORMAT_CAB"
         const val VIBRATE =  "VIBRATE"
 
+        const val PARAM_PREF = "PARAM_PREF"
+        const val FORMAT_DATA = "FORMAT_DATA"
+        const val PARAM_VIBRATE = "PARAM_VIBRATE"
+
+    }
+
+    fun setFormatCab(value: Int) {
+        val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)
+        val editor = pref.edit()
+        if (pref.contains(FORMAT_DATA)) editor.remove(FORMAT_DATA)
+        editor.putInt(FORMAT_DATA, value)
+        editor.commit()
+    }
+
+
+
+
+
+    fun setVibrate(value: Int) {
+        val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)
+        val editor = pref.edit()
+        if (pref.contains(PARAM_VIBRATE)) editor.remove(PARAM_VIBRATE)
+        editor.putInt(PARAM_VIBRATE, value)
+        editor.commit()
+    }
+
+    fun getVibrate(): Int {
+        val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)
+        return pref.getInt(PARAM_VIBRATE, 0)
     }
 
 }
