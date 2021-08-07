@@ -51,11 +51,6 @@ public class AppController extends MultiDexApplication {
         return nomApp;
     }
 
-
-
-
-
-
 }
 
 

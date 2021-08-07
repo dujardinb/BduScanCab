@@ -1,5 +1,4 @@
 package fr.vrvd.dsi.bduscancablibrary
-
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -14,11 +13,9 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import java.util.concurrent.atomic.AtomicBoolean
 
-
 typealias BarcodeListener = ( barcode: String) -> Unit
 
-
-class scanQR : AppCompatActivity() {
+class ScanCabActivity : AppCompatActivity() {
     private var processingBarcode = AtomicBoolean(false)
     private lateinit var cameraExecutor: ExecutorService
     private lateinit var scanQRContext: Context
@@ -35,8 +32,10 @@ class scanQR : AppCompatActivity() {
         val formatCab = intent.getIntExtra(FORMAT_CAB,getResources().getInteger(R.integer.FORMAT_QR_CODE))
         StoreData.setContext(this);
         val vibrate = intent.getIntExtra(VIBRATE,0)
+        val beep = intent.getIntExtra(BEEP,0)
         setFormatCab(formatCab)
         setVibrate(vibrate)
+        setBeep(beep)
         startCamera()
     }
 
@@ -63,28 +62,17 @@ class scanQR : AppCompatActivity() {
 
     private fun startCamera() {
         Log.d(Companion.TAG, "startCamera")
-        // Create an instance of the ProcessCameraProvider,
-        // which will be used to bind the use cases to a lifecycle owner.
         val cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-
-        // Add a listener to the cameraProviderFuture.
-        // The first argument is a Runnable, which will be where the magic actually happens.
-        // The second argument (way down below) is an Executor that runs on the main thread.
         cameraProviderFuture.addListener({
-            // Add a ProcessCameraProvider, which binds the lifecycle of your camera to
-            // the LifecycleOwner within the application's life.
             val cameraProvider: ProcessCameraProvider = cameraProviderFuture.get()
-            // Initialize the Preview object, get a surface provider from your PreviewView,
-            // and set it on the preview instance.
             val  barcodeViewRessource:androidx.camera.view.PreviewView =
                 findViewById(R.id.fragment_scan_barcode_preview_view)
             val preview = Preview.Builder().build().also {
                 it.setSurfaceProvider(
-
                     barcodeViewRessource.surfaceProvider
                 )
             }
-            // Setup the ImageAnalyzer for the ImageAnalysis use case
+
             val imageAnalysis = ImageAnalysis.Builder()
                 .build()
                 .also {
@@ -96,12 +84,10 @@ class scanQR : AppCompatActivity() {
                     })
                 }
 
-            // Select back camera
+
             val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
             try {
-                // Unbind any bound use cases before rebinding
                 cameraProvider.unbindAll()
-                // Bind use cases to lifecycleOwner
                 cameraProvider.bindToLifecycle(this, cameraSelector, preview, imageAnalysis)
             } catch (e: Exception) {
                 Log.e("PreviewUseCase", "Binding failed! :(", e)
@@ -113,21 +99,23 @@ class scanQR : AppCompatActivity() {
         Log.d(Companion.TAG, "searchBarcode:$barcode ")
 
         if(getVibrate() > 0) LibApp.vibrate(this)
+        if(getBeep() > 0) LibApp.beep(1)
         val returnIntent = Intent()
         returnIntent.putExtra("result", barcode)
         setResult(RESULT_OK, returnIntent)
         finish()
     }
 
-
     companion object {
         const val TAG = "**DEBUG**"
         const val FORMAT_CAB =  "FORMAT_CAB"
         const val VIBRATE =  "VIBRATE"
+        const val BEEP =  "BEEP"
 
         const val PARAM_PREF = "PARAM_PREF"
         const val FORMAT_DATA = "FORMAT_DATA"
         const val PARAM_VIBRATE = "PARAM_VIBRATE"
+        const val PARAM_BEEP = "PARAM_BEEP"
 
     }
 
@@ -150,6 +138,19 @@ class scanQR : AppCompatActivity() {
     fun getVibrate(): Int {
         val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)
         return pref.getInt(PARAM_VIBRATE, 0)
+    }
+
+    fun setBeep(value: Int) {
+        val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)
+        val editor = pref.edit()
+        if (pref.contains(PARAM_BEEP)) editor.remove(PARAM_BEEP)
+        editor.putInt(PARAM_BEEP, value)
+        editor.commit()
+    }
+
+    fun getBeep(): Int {
+        val pref = getSharedPreferences(PARAM_PREF, MODE_PRIVATE)
+        return pref.getInt(PARAM_BEEP, 0)
     }
 
 }

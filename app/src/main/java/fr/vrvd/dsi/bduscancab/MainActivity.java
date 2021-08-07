@@ -9,7 +9,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import fr.vrvd.dsi.bduscancablibrary.scanQR;
+import fr.vrvd.dsi.bduscancablibrary.ScanCabActivity;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,9 +22,10 @@ public class MainActivity extends AppCompatActivity {
         btScan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this, scanQR.class);
+                Intent intent = new Intent(MainActivity.this, ScanCabActivity.class);
                 intent.putExtra("FORMAT_CAB",getResources().getInteger(R.integer.FORMAT_QR_CODE));
                 intent.putExtra("VIBRATE",1);
+                intent.putExtra("BEEP",1);
                 startActivityForResult(intent,2);
             }
         });

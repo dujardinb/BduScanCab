@@ -12,7 +12,6 @@ import android.widget.Toast;
  * Created by B Dujardin on 07/03/2015.
  */
 public class LibApp {
-
     public static void toastShow(String mess) {
         Toast.makeText(AppController.getAppContext(),
                 mess, Toast.LENGTH_LONG).show();
@@ -29,9 +28,6 @@ public class LibApp {
         }
     }
 
-    public static boolean isEmailValid(String email) {
-        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
-    }
 
     public static void beep(int nb) {
         ToneGenerator toneGen1 = new ToneGenerator(AudioManager.STREAM_SYSTEM, 100);
